@@ -10,7 +10,8 @@ RUN mkdir -p /opt/nwnserver
 WORKDIR /opt/nwnserver
 RUN wget http://neverwintervault.org/sites/neverwintervault.org/files/project/1621/files/nwndedicatedserver1.69.zip
 RUN unzip -x nwndedicatedserver1.69 -d .
-RUN rm macdedserver169.zip \
+RUN rm nwndedicatedserver1.69.zip \
+    macdedserver169.zip \
     nwserver.exe \
     nwupdate.exe \
     Patchw32.dll \
