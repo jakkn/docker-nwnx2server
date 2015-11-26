@@ -36,12 +36,10 @@ WORKDIR /usr/local/src/nwnx2-linux/build
 RUN cmake ..
 RUN make
 
-# Copy compiled sources to nwnserver
+# Symlink nwnx2.so to nwnserver, and copy config and run script
 WORKDIR /usr/local/src/nwnx2-linux/build/compiled
-RUN cp nwnx2.so \
-    nwnx2.ini \
-    nwnstartup.sh \
-    /opt/nwnserver
+RUN ln -s $(pwd)/nwnx2.so /opt/nwnserver/nwnx2.so \
+    && cp nwnx2.ini nwnstartup.sh /opt/nwnserver
 
 # Prepare to run
 WORKDIR /opt/nwnserver
