@@ -9,17 +9,19 @@ RUN apt-get install -y \
 RUN mkdir -p /opt/nwnserver
 WORKDIR /opt/nwnserver
 RUN wget http://neverwintervault.org/sites/neverwintervault.org/files/project/1621/files/nwndedicatedserver1.69.zip
-RUN unzip -x nwndedicatedserver1.69 -d .
-RUN rm nwndedicatedserver1.69.zip \
-    macdedserver169.zip \
-    nwserver.exe \
-    nwupdate.exe \
-    Patchw32.dll \
-    readme.macserver.txt
-RUN tar xzvf linuxdedserver169.tar.gz
-RUN chmod -R ug+w * \
+RUN unzip -x nwndedicatedserver1.69 -d . \
+    && rm nwndedicatedserver1.69.zip \
+        macdedserver169.zip \
+        nwserver.exe \
+        nwupdate.exe \
+        Patchw32.dll \
+        readme.macserver.txt \
+    && tar xzvf linuxdedserver169.tar.gz \
+    && chmod -R ug+w * \
     && chmod ug+x fixinstall \
-    && ./fixinstall
+    && ./fixinstall \
+    && rm linuxdedserver169.tar.gz \
+    && rm -r data/* nwm
 
 # Clone nwnx2-linux
 WORKDIR /usr/local/src
@@ -27,8 +29,10 @@ RUN git clone https://github.com/NWNX/nwnx2-linux.git
 WORKDIR /usr/local/src/nwnx2-linux
 
 # Download all plugin dependencies
-RUN apt-get update
-RUN find . -name apt-dep -exec cat {} \; | xargs sudo apt-get install -y
+RUN apt-get update \
+    && find . -name apt-dep -exec cat {} \; | xargs sudo apt-get install -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && sudo apt-get clean
 
 # Build
 RUN mkdir build
