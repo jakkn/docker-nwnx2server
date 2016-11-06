@@ -1,55 +1,36 @@
-FROM besn0847/ubuntu32
+FROM jakkn/nwnserver:slim
 
-RUN apt-get install -y \
-    wget \
-    unzip \
-    git
+MAINTAINER jakkn <jakobknutsen@gmail.com>
 
-# Download, extract and run fix on the dedicated server files
-RUN mkdir -p /opt/nwnserver
-WORKDIR /opt/nwnserver
-RUN wget http://neverwintervault.org/sites/neverwintervault.org/files/project/1621/files/nwndedicatedserver1.69.zip
-RUN unzip -x nwndedicatedserver1.69 -d . \
-    && rm nwndedicatedserver1.69.zip \
-        macdedserver169.zip \
-        nwserver.exe \
-        nwupdate.exe \
-        Patchw32.dll \
-        readme.macserver.txt \
-    && tar xzvf linuxdedserver169.tar.gz \
-    && chmod -R ug+w * \
-    && chmod ug+x fixinstall \
-    && ./fixinstall \
-    && rm linuxdedserver169.tar.gz \
-    && rm -r data/* nwm
-
-# Clone nwnx2-linux
+# Build nwnx2-linux
 WORKDIR /usr/local/src
-RUN git clone https://github.com/NWNX/nwnx2-linux.git
-WORKDIR /usr/local/src/nwnx2-linux
+RUN downloadDeps='git' \
+    && apt update \
+    && apt install -y $downloadDeps \
+    && git clone https://github.com/NWNX/nwnx2-linux.git \
+    && cd nwnx2-linux \
+    && rm -rf plugins/jvm \
+    && buildDeps=`find . -name apt-dep -exec cat {} \;` \
+    && apt install -y $buildDeps \
+    && mkdir build \
+    && cd build \
+    && cmake .. \
+    && make -j4 \
+    && mv compiled /usr/local/bin/nwnx2-linux \
+    && rm -rf /var/lib/apt/lists/* /usr/local/src/* \
+    && apt-get purge -y --auto-remove $downloadDeps $buildDeps \
+    && apt-get clean
 
-# Download all plugin dependencies
-RUN apt-get update \
-    && find . -name apt-dep -exec cat {} \; | xargs sudo apt-get install -y \
-    && rm -rf /var/lib/apt/lists/* \
-    && sudo apt-get clean
-
-# Build
-RUN mkdir build
-WORKDIR /usr/local/src/nwnx2-linux/build
-RUN cmake ..
-RUN make
-
-# Symlink nwnx2.so to nwnserver, and copy config and run script
-WORKDIR /usr/local/src/nwnx2-linux/build/compiled
+# Symlink nwnx2.so and copy config and run script
+WORKDIR /usr/local/bin/nwnx2-linux
 RUN ln -s $(pwd)/nwnx2.so /opt/nwnserver/nwnx2.so \
     && cp nwnx2.ini nwnstartup.sh /opt/nwnserver
 
 # Prepare to run
 WORKDIR /opt/nwnserver
 RUN sed -i \
-    -e's/YourServerHere/"Docker-loaded server"/g' \
-    -e's/YourModuleHere/Contest Of Champions 0492/g' \
+    -e's/YourServerHere/"Containerized nwnx2-linuxserver"/g' \
+    -e's/YourModuleHere/module/g' \
     nwnstartup.sh
 
 CMD ["./nwnstartup.sh"]
