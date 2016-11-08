@@ -3,7 +3,7 @@ Containerization of NWNX2 server on Linux.
 
 Base image is in [docker-nwnserver](https://github.com/jakkn/docker-nwnserver)
 
-## Build & run
+## Run
 ```
 docker-compose up -d
 ```
