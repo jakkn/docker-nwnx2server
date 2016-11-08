@@ -8,7 +8,10 @@ Base image is in [docker-nwnserver](https://github.com/jakkn/docker-nwnserver)
 docker-compose up -d
 ```
 
-Options to nwserver is given in `docker-compose.yml`.
+#### Note
+Options to nwserver can be given in the following ways:
+- Using `docker-compose.yml` the default script can be changed to `compose-nwnstartup.sh` and will pass on any arguments from the compose file to nwserver. This is the recommended procedure.
+- Using the default script `nwnstartup.sh`. This will try to load a module named `module.mod`
 
 ## Dependencies
 - [Docker](https://docs.docker.com/engine/installation/)
