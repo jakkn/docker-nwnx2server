@@ -1,5 +1,5 @@
 nwnserver:
-  image: jakkn/nwnx2-linuxserver:slim
+  image: jakkn/nwnx2server-linux:slim
 
   working_dir: /opt/nwnserver/
 
