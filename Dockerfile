@@ -18,6 +18,7 @@ RUN downloadDeps='git' \
     && make -j4 \
     && mv compiled /usr/local/bin/nwnx2-linux \
     && rm -rf /var/lib/apt/lists/* /usr/local/src/* \
+    && buildDeps=`echo $buildDeps | sed -E 's/ lib(pq|sqlite|mysql)[a-z1-9]*-dev//g'` \
     && apt-get purge -y --auto-remove $downloadDeps $buildDeps \
     && apt-get autoremove -y \
     && apt-get clean
