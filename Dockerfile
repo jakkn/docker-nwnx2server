@@ -19,6 +19,7 @@ RUN downloadDeps='git' \
     && mv compiled /usr/local/bin/nwnx2-linux \
     && rm -rf /var/lib/apt/lists/* /usr/local/src/* \
     && apt-get purge -y --auto-remove $downloadDeps $buildDeps \
+    && apt-get autoremove -y \
     && apt-get clean
 
 # Symlink nwnx2.so and copy config and run script
