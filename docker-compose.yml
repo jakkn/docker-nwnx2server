@@ -1,5 +1,5 @@
 nwnserver:
-  image: jakkn/nwnx2server:slim
+  image: jakkn/nwnx2server:latest
 
   working_dir: /opt/nwnserver/
 
@@ -11,7 +11,9 @@ nwnserver:
     - /opt/nwn/servervault:/opt/nwnserver/servervault
     - /opt/nwn/tlk:/opt/nwnserver/tlk
 
-  command: ./compose-nwnstartup.sh
+  command: ./compose-nwnx2setup.sh
+    --profiler
+    --mysql
     -publicserver 1
     -servername "Containerized nwnx2-linuxserver"
     -dmpassword dmpw

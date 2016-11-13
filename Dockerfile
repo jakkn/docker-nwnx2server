@@ -35,11 +35,7 @@ RUN sed -i \
     -e's/YourModuleHere/module/g' \
     nwnstartup.sh
 
-# Prepare run script for use with docker-compose
-RUN echo '#!/bin/sh\n\n\
-        export LD_PRELOAD=./nwnx2.so\n\
-        export LD_LIBRARY_PATH=lib/:$LD_LIBRARY_PATH\n\n\
-        ./nwserver "$@"' > compose-nwnstartup.sh \
-    && chmod +x compose-nwnstartup.sh
+# Copy over script for use with docker-compose
+ADD ["docker/scripts/*", "./"]
 
 CMD ["./nwnstartup.sh"]
