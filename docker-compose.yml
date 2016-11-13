@@ -1,40 +1,60 @@
-nwnserver:
-  image: jakkn/nwnx2server:latest
+version: '2'
+services:
+  nwnserver:
+    image: jakkn/nwnx2server:latest
+  
+    working_dir: /opt/nwnserver/
+  
+    volumes:
+      - /opt/nwn/data:/opt/nwnserver/data
+      - /opt/nwn/erf:/opt/nwnserver/erf
+      - /opt/nwn/hak:/opt/nwnserver/hak
+      - /opt/nwn/modules:/opt/nwnserver/modules
+      - /opt/nwn/servervault:/opt/nwnserver/servervault
+      - /opt/nwn/tlk:/opt/nwnserver/tlk
+  
+    command: ./compose-nwnx2setup.sh
+      --profiler
+      --mysql
+      -publicserver 1
+      -servername "Containerized nwnx2-linuxserver"
+      -dmpassword dmpw
+      -oneparty 0
+      -pvp 0
+      -difficulty 2
+      -elc 1
+      -reloadwhenempty 0
+      -module "module"
+      -maxclients 32
+      -servervault 1
+      -maxlevel 40
+      -gametype 0
+      -autosaveinterval 0
+  
+    ports:
+      - "5122:5121/tcp"
+      - "5122:5121/udp"
+    expose:
+      - "5121"
+  
+    restart: always
+    stdin_open: true
+    tty: true
+  
+    depends_on:
+      - db
+    links:
+      - db
+  
+  db:
+    image: mysql/mysql-server:5.7.15
+  
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=database
 
-  working_dir: /opt/nwnserver/
-
-  volumes:
-    - /opt/nwn/data:/opt/nwnserver/data
-    - /opt/nwn/erf:/opt/nwnserver/erf
-    - /opt/nwn/hak:/opt/nwnserver/hak
-    - /opt/nwn/modules:/opt/nwnserver/modules
-    - /opt/nwn/servervault:/opt/nwnserver/servervault
-    - /opt/nwn/tlk:/opt/nwnserver/tlk
-
-  command: ./compose-nwnx2setup.sh
-    --profiler
-    --mysql
-    -publicserver 1
-    -servername "Containerized nwnx2-linuxserver"
-    -dmpassword dmpw
-    -oneparty 0
-    -pvp 0
-    -difficulty 2
-    -elc 1
-    -reloadwhenempty 0
-    -module "module"
-    -maxclients 32
-    -servervault 1
-    -maxlevel 40
-    -gametype 0
-    -autosaveinterval 0
-
-  ports:
-    - "5122:5121/tcp"
-    - "5122:5121/udp"
-  expose:
-    - "5121"
-
-  restart: always
-  stdin_open: true
-  tty: true
+    volumes:
+      - ./docker/mysql-db:/docker-entrypoint-initdb.d
+    restart: always
+    stdin_open: true
+    tty: true
