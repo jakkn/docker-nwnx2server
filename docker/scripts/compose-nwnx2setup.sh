@@ -17,6 +17,9 @@ find_nwnx_executable $1
 while [[ -f $FILE ]]; do
     if [[ $ARG_NODASH =~ (mysql|pgsql|sqlite) ]]; then
         ln -s "$FILE" "$NWNX_DIR/nwnx_odbc.so"
+        ./enabledb.pl -d$ARG_NODASH
+        sed -i -e "s/^server=localhost$/server=db/g" nwnx2.ini
+        sed -i -e "s/^user=username$/user=root/g" nwnx2.ini
     else
         ln -s "$FILE" "$NWNX_DIR/nwnx_$ARG_NODASH.so"
     fi
