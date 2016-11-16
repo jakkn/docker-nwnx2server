@@ -4,7 +4,7 @@ NWNX_EXECS=`find "/usr/local/bin/nwnx2-linux" -name "nwnx_*.so"`
 NWNX_DIR="/opt/nwnserver"
 
 # Remove any potential plugins
-rm nwnx_*.so
+rm -f nwnx_*.so
 
 find_nwnx_executable() {
     ARG=$1
