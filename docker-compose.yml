@@ -1,10 +1,9 @@
 version: '2'
 services:
   nwnserver:
+    build: .
     image: jakkn/nwnx2server:latest
-  
     working_dir: /opt/nwnserver/
-  
     volumes:
       - /opt/nwn/data:/opt/nwnserver/data
       - /opt/nwn/erf:/opt/nwnserver/erf
@@ -12,7 +11,6 @@ services:
       - /opt/nwn/modules:/opt/nwnserver/modules
       - /opt/nwn/servervault:/opt/nwnserver/servervault
       - /opt/nwn/tlk:/opt/nwnserver/tlk
-  
     command: ./compose-nwnx2setup.sh
       --profiler
       --mysql
@@ -30,29 +28,24 @@ services:
       -maxlevel 40
       -gametype 0
       -autosaveinterval 0
-  
     ports:
       - "5122:5121/tcp"
       - "5122:5121/udp"
     expose:
       - "5121"
-  
     restart: always
     stdin_open: true
     tty: true
-  
     depends_on:
       - db
     links:
       - db
-  
+
   db:
     image: mysql/mysql-server:5.7.15
-  
     environment:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=database
-
     volumes:
       - ./docker/mysql-db:/docker-entrypoint-initdb.d
     restart: always
