@@ -13,8 +13,6 @@ Options to nwserver can be given in the following ways:
 - Using `docker-compose.yml` the default script can be changed to `compose-nwnstartup.sh` and will pass on any arguments from the compose file to nwserver. This is the recommended procedure.
 - Using the default script `nwnstartup.sh`. This will try to load a module named `module.mod`
 
-The plugin nwnx_jvm has been skipped due to compile issues.
-
 ## Dependencies
 - [Docker](https://docs.docker.com/engine/installation/)
 - [Compose](https://docs.docker.com/compose/install/)

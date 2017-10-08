@@ -4,19 +4,27 @@ MAINTAINER jakkn <jakobknutsen@gmail.com>
 
 # Build nwnx2-linux
 WORKDIR /usr/local/src
-RUN downloadDeps='git' \
+RUN downloadDeps='git software-properties-common' \
     && apt update \
     && apt install -y $downloadDeps \
+    && add-apt-repository ppa:openjdk-r/ppa -y \
+    && apt update \
     && git clone https://github.com/NWNX/nwnx2-linux.git \
     && cd nwnx2-linux \
-    && rm -rf plugins/jvm \
     && buildDeps=`find . -name apt-dep -exec cat {} \;` \
     && apt install -y $buildDeps \
+    && export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-i386 \
+    && mv plugins/jvm . \
     && mkdir build \
     && cd build \
     && cmake .. \
-    && make -j4 \
+    && make -j5 \
     && mv compiled /usr/local/bin/nwnx2-linux \
+    && cd .. \
+    && mv jvm plugins \
+    && cmake . \
+    && make jvm \
+    && mv compiled/nwnx_jvm.so /usr/local/bin/nwnx2-linux/ \
     && rm -rf /var/lib/apt/lists/* /usr/local/src/* \
     && buildDeps=`echo $buildDeps | sed -E 's/ lib(pq|sqlite|mysql)[a-z1-9]*-dev//g'` \
     && apt-get purge -y --auto-remove $downloadDeps $buildDeps \
