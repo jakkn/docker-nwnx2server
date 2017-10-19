@@ -13,18 +13,18 @@ RUN downloadDeps='git software-properties-common' \
     && cd nwnx2-linux \
     && buildDeps=`find . -name apt-dep -exec cat {} \;` \
     && apt install -y $buildDeps \
+# export to set in running environment
     && export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-i386 \
-    && mv plugins/jvm . \
-    && mkdir build \
-    && cd build \
-    && cmake .. \
+# set in all environments
+    && echo "JAVA_HOME=/usr/lib/jvm/java-7-openjdk-i386" >> /etc/environment \
+# build in tree because nwnx_jvm does not handle building out of tree
+    && cmake . \
     && make -j5 \
     && mv compiled /usr/local/bin/nwnx2-linux \
-    && cd .. \
-    && mv jvm plugins \
-    && cmake . \
-    && make jvm \
-    && mv compiled/nwnx_jvm.so /usr/local/bin/nwnx2-linux/ \
+# copy jar and class files required by nwnx_jvm
+    && cp plugins/jvm/java/bin/org /opt/nwnserver/jvm -r \
+    && cp plugins/jvm/java/dist/org.nwnx.nwnx2.jvm.jar /opt/nwnserver/jvm/ \
+    && sed -i -e 's/^classpath=\"\/path\/to\/org.nwnx.nwnx2.java.jar\"$/classpath=\"\.\/jvm\"/g' compiled/nwnx2.ini \
     && rm -rf /var/lib/apt/lists/* /usr/local/src/* \
     && buildDeps=`echo $buildDeps | sed -E -e 's/ lib(pq|sqlite|mysql)[a-z1-9]*-dev//g' -e 's/ ruby / /g' -e 's/ openjdk-7-jdk//g'` \
     && apt-get purge -y --auto-remove $downloadDeps $buildDeps \
