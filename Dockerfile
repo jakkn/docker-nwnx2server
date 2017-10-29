@@ -16,7 +16,7 @@ RUN downloadDeps='git software-properties-common' \
     && git clone https://github.com/NWNX/nwnx2-linux.git \
     && cd nwnx2-linux \
     && buildDeps=`find . -name apt-dep -exec cat {} \;` \
-    && apt install -y $buildDeps \
+    && apt install -y --no-install-recommends $buildDeps \
 # build in tree because nwnx_jvm does not handle building out of tree
     && cmake . \
 # build jvm first because it randomly fails during threaded execution of target all
