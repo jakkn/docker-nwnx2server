@@ -21,7 +21,8 @@ RUN downloadDeps='git' \
     && make jvm \
     && make -j4 \
 # copy jar and class files required by nwnx_jvm
-    && cp plugins/jvm/java/bin/org /opt/nwnserver/jvm -r \
+    && mkdir /opt/nwnserver/jvm \
+    && cp plugins/jvm/java/bin/org /opt/nwnserver/jvm/ -r \
     && cp plugins/jvm/java/dist/org.nwnx.nwnx2.jvm.jar /opt/nwnserver/jvm/ \
     && sed -i -e 's/^classpath=\"\/path\/to\/org.nwnx.nwnx2.java.jar\"$/classpath=\"\.\/jvm\"/g' compiled/nwnx2.ini \
 # store compiled output
