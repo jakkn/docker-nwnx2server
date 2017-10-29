@@ -28,11 +28,13 @@ RUN downloadDeps='git software-properties-common' \
     && sed -i -e 's/^classpath=\"\/path\/to\/org.nwnx.nwnx2.java.jar\"$/classpath=\"\.\/jvm\"/g' compiled/nwnx2.ini \
 # store compiled output
     && mv compiled /usr/local/bin/nwnx2-linux \
-    && rm -rf /var/lib/apt/lists/* /usr/local/src/* \
-    && buildDeps=`echo $buildDeps | sed -E -e 's/ lib(pq|sqlite|mysql)[a-z1-9]*-dev//g' -e 's/ ruby / /g' -e 's/ openjdk-7-jdk//g'` \
+    && buildDeps=`echo $buildDeps | sed -E -e 's/ lib(pq|sqlite|mysql)[a-z1-9]*-dev//g' -e 's/ ruby / /g'` \
     && apt-get purge -y --auto-remove $downloadDeps $buildDeps \
     && apt-get autoremove -y \
-    && apt-get clean
+    && apt-get clean \
+# reduce image size by using jre-headless
+    && apt install -y openjdk-7-jre-headless \
+    && rm -rf /var/lib/apt/lists/* /usr/local/src/*
 
 # Symlink nwnx2.so and copy config and run script
 WORKDIR /usr/local/bin/nwnx2-linux
