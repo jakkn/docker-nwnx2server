@@ -27,12 +27,12 @@ RUN downloadDeps='git' \
     && sed -i -e 's/^classpath=\"\/path\/to\/org.nwnx.nwnx2.java.jar\"$/classpath=\"\.\/jvm\"/g' compiled/nwnx2.ini \
 # store compiled output
     && mv compiled /usr/local/bin/nwnx2-linux \
-    && buildDeps=`echo $buildDeps | sed -E -e 's/ lib(pq|sqlite|mysql)[a-z1-9]*-dev//g' -e 's/ ruby / /g'` \
     && apt-get purge -y --auto-remove $downloadDeps $buildDeps \
     && apt-get autoremove -y \
     && apt-get clean \
-# reduce image size by using jre-headless
-    && apt install -y openjdk-7-jre-headless \
+# reinstall all run dependencies
+    && runDeps="openjdk-7-jre-headless ruby sqlite postgresql-client mysql-client" \
+    && apt install -y $runDeps \
     && rm -rf /var/lib/apt/lists/* /usr/local/src/*
 
 # Symlink nwnx2.so and copy config and run script
