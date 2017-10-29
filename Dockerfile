@@ -11,6 +11,7 @@ ENV JAVA_HOME=/usr/lib/jvm/java-7-openjdk-i386
 RUN downloadDeps='git software-properties-common' \
     && apt update \
     && apt install -y $downloadDeps \
+# Add openjdk ppa because openjdk-7 does not exist in the default package repositories
     && add-apt-repository ppa:openjdk-r/ppa -y \
     && apt update \
     && git clone https://github.com/NWNX/nwnx2-linux.git \
