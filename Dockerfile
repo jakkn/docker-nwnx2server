@@ -19,7 +19,9 @@ RUN downloadDeps='git software-properties-common' \
     && apt install -y $buildDeps \
 # build in tree because nwnx_jvm does not handle building out of tree
     && cmake . \
-    && make -j5 \
+# build jvm first because it randomly fails during threaded execution of target all
+    && make jvm \
+    && make -j4 \
     && mv compiled /usr/local/bin/nwnx2-linux \
 # copy jar and class files required by nwnx_jvm
     && cp plugins/jvm/java/bin/org /opt/nwnserver/jvm -r \
