@@ -22,11 +22,12 @@ RUN downloadDeps='git software-properties-common' \
 # build jvm first because it randomly fails during threaded execution of target all
     && make jvm \
     && make -j4 \
-    && mv compiled /usr/local/bin/nwnx2-linux \
 # copy jar and class files required by nwnx_jvm
     && cp plugins/jvm/java/bin/org /opt/nwnserver/jvm -r \
     && cp plugins/jvm/java/dist/org.nwnx.nwnx2.jvm.jar /opt/nwnserver/jvm/ \
     && sed -i -e 's/^classpath=\"\/path\/to\/org.nwnx.nwnx2.java.jar\"$/classpath=\"\.\/jvm\"/g' compiled/nwnx2.ini \
+# store compiled output
+    && mv compiled /usr/local/bin/nwnx2-linux \
     && rm -rf /var/lib/apt/lists/* /usr/local/src/* \
     && buildDeps=`echo $buildDeps | sed -E -e 's/ lib(pq|sqlite|mysql)[a-z1-9]*-dev//g' -e 's/ ruby / /g' -e 's/ openjdk-7-jdk//g'` \
     && apt-get purge -y --auto-remove $downloadDeps $buildDeps \
