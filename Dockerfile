@@ -4,6 +4,10 @@ MAINTAINER jakkn <jakobknutsen@gmail.com>
 
 # Build nwnx2-linux
 WORKDIR /usr/local/src
+
+# Java used by nwnx_jvm
+ENV JAVA_HOME=/usr/lib/jvm/java-7-openjdk-i386
+
 RUN downloadDeps='git software-properties-common' \
     && apt update \
     && apt install -y $downloadDeps \
@@ -13,10 +17,6 @@ RUN downloadDeps='git software-properties-common' \
     && cd nwnx2-linux \
     && buildDeps=`find . -name apt-dep -exec cat {} \;` \
     && apt install -y $buildDeps \
-# export to set in running environment
-    && export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-i386 \
-# set in all environments
-    && echo "JAVA_HOME=/usr/lib/jvm/java-7-openjdk-i386" >> /etc/environment \
 # build in tree because nwnx_jvm does not handle building out of tree
     && cmake . \
     && make -j5 \
