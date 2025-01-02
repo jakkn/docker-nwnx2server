@@ -1,3 +1,9 @@
+> [!WARNING]  
+> This image is built for NWN v1.69. It is old, bloated, and unsupported.
+> For NWN:EE images please refer to
+> - NWN: https://github.com/urothis/nwserver/pkgs/container/nwserver
+> - NWNX: https://github.com/nwnxee/unified/pkgs/container/unified
+
 # docker-nwnx2server
 Containerization of NWNX2 server on Linux.
 
